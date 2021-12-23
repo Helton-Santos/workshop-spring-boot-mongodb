@@ -1,5 +1,6 @@
 package com.heltonsantos.workshopmongo.repository;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -17,5 +18,7 @@ public interface PostRepository extends MongoRepository<Post, String>{
 	// Essa declaração faz com que o SpringData monte a consulta / This declaration causes SpringData to assemble the query
 	List<Post> findByTitleContainingIgnoreCase(String text);
 	
+	@Query("{ $and: [ {date: {$gte: ?1} }, { date: { $lte: ?2} } , ... , { $or: [ { 'title': <field>: { $regex: ?0, $options: 'i' } }, { 'body': <field>: { $regex: ?0, $options: 'i' } }, ... , { 'comments.text': <field>: { $regex: ?0, $options: 'i' } } ] } ] }")
+	List<Post> fullSearch(String text, Date minDate, Date maxDate);
 	
 }
